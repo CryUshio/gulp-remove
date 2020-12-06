@@ -1,0 +1,35 @@
+{
+  "name": "gulp-remove",
+  "version": "1.0.0",
+  "description": "同步删除未跟踪的编译文件",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CryUshio/gulp-remove.git"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulp",
+    "remove",
+    "gulpplugin",
+    "delete",
+    "sync"
+  ],
+  "author": "",
+  "license": "LGPL-2.1-or-later",
+  "bugs": {
+    "url": "https://github.com/CryUshio/gulp-remove/issues"
+  },
+  "homepage": "https://github.com/CryUshio/gulp-remove#readme",
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "plugin-error": "^1.0.1",
+    "replace-ext": "^2.0.0",
+    "through2": "^4.0.2"
+  }
+}
