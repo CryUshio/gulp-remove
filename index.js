@@ -56,16 +56,27 @@ module.exports = function (name, destination, options = {}) {
   // 记录本次编译的 manifest，并在旧的 manifest 中删除仍然存在的文件的键值对
   function manifest() {
     return through.obj(function (file, _, cb) {
-      let filepath = file.relative;
-      const dirPath = path.dirname(filepath);
-      if (options.extension) {
-        filepath = replaceExt(filepath, options.extension);
+      const filepath = file.relative;
+      const fileList = [];
+      const dirPath = path.dirname(file.relative);
+
+      if (typeof options.extension === 'string') {
+        fileList.push(replaceExt(filepath, options.extension))
       }
 
-      newManifest[filepath] = file.stat && Math.floor(file.stat.mtimeMs);
-      newManifest[dirPath] = true;
+      // 支持一对多映射
+      if (options.extension instanceof Array) {
+        options.extension.forEach((ext) => {
+          fileList.push(replaceExt(filepath, ext));
+        });
+      }
 
-      deleteRecordFromManifest(oldManifest, filepath);
+      fileList.forEach((f) => {
+        newManifest[f] = file.stat && Math.floor(file.stat.mtimeMs);
+        deleteRecordFromManifest(oldManifest, f);
+      });
+
+      newManifest[dirPath] = true;
       deleteRecordFromManifest(oldManifest, dirPath);
 
       cb(null, file);
@@ -77,6 +88,12 @@ module.exports = function (name, destination, options = {}) {
     const removeList = Object.keys(oldManifest);
 
     removeList.forEach((filepath) => {
+      if (fsx.existsSync(filepath)) {
+        // 文件夹不为空时不处理
+        if (fsx.statSync(filepath).isDirectory() && fsx.readdirSync(filepath).length) {
+          return;
+        }
+      }
       fsx.remove(path.join(options.cwd, destination, filepath));
     });
 
