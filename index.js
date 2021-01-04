@@ -4,7 +4,7 @@ const fsx = require('fs-extra');
 const replaceExt = require('replace-ext');
 const PluginError = require('plugin-error');
 
-const manifestDir = '.gulp-remove';
+const manifestDir = 'node_modules/.cache/gulp-remove';
 
 // 载入上一次编译生成的 manifest
 function loadManifest(filepath) {
