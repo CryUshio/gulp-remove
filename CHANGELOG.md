@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/CryUshio/gulp-remove/compare/v1.2.1...v1.3.0) (2021-01-04)
+
+
+### Features
+
+* 支持ts ([b4d979e](https://github.com/CryUshio/gulp-remove/commit/b4d979e9f78332ce0c2d357f98293c30faca3395))
+
 ### 1.2.1 (2021-01-04)
 
 
