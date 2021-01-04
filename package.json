@@ -2,19 +2,23 @@
   "name": "gulp-remove",
   "version": "1.2.1",
   "description": "同步删除未跟踪的编译文件",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "ava",
-    "release-major": "standard-version --release-as major",
-    "release-minor": "standard-version --release-as minor",
-    "release": "standard-version --release-as patch"
+    "build": "rimraf lib && tsc",
+    "release-major": "npm run build && standard-version --release-as major",
+    "release-minor": "npm run build && standard-version --release-as minor",
+    "release": "npm run build && standard-version --release-as patch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CryUshio/gulp-remove.git"
   },
   "files": [
-    "index.js"
+    "lib/index.js",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "gulp",
@@ -36,6 +40,14 @@
     "through2": "^4.0.2"
   },
   "devDependencies": {
-    "standard-version": "^9.1.0"
+    "@types/fs-extra": "^9.0.6",
+    "@types/node": "^14.14.19",
+    "@types/replace-ext": "^2.0.0",
+    "@types/through2": "^2.0.36",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
+    "rimraf": "^3.0.2",
+    "standard-version": "^9.1.0",
+    "typescript": "^4.1.3"
   }
 }

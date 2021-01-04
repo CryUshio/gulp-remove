@@ -1,13 +1,21 @@
-const path = require('path');
-const through = require('through2');
-const fsx = require('fs-extra');
-const replaceExt = require('replace-ext');
-const PluginError = require('plugin-error');
+import path from "path";
+import through from "through2";
+import fsx from "fs-extra";
+import replaceExt from "replace-ext";
+import PluginError from "plugin-error";
 
-const manifestDir = 'node_modules/.cache/gulp-remove';
+type Require<T, K extends keyof T> = T & Required<Pick<T, K>>;
+type Options = {
+  cwd?: string;
+  extension?: string | string[];
+};
+
+type Manifest = Record<string, number | boolean>;
+
+const manifestDir = "node_modules/.cache/gulp-remove";
 
 // 载入上一次编译生成的 manifest
-function loadManifest(filepath) {
+function loadManifest(filepath: string): Manifest {
   try {
     return fsx.readJSONSync(filepath);
   } catch (error) {
@@ -16,7 +24,7 @@ function loadManifest(filepath) {
 }
 
 // 写入本次编译生成的 manifest
-function writeManifest(filepath, manifest) {
+function writeManifest(filepath: string, manifest: Manifest) {
   try {
     const dirname = path.dirname(filepath);
     if (!fsx.existsSync(dirname)) {
@@ -27,31 +35,32 @@ function writeManifest(filepath, manifest) {
 }
 
 // 在内存中删除上一次编译的 manifest 里的键值对
-function deleteRecordFromManifest(manifest, key) {
+function deleteRecordFromManifest(manifest: Manifest, key: string) {
   try {
     delete manifest[key];
   } catch (error) {}
 }
 
-module.exports = function (name, destination, options = {}) {
-  options = {
+export default function (name: string, destination: string, options: Options = {}) {
+  const _options: Require<Options, "cwd"> = {
     cwd: process.cwd(),
+    extension: "",
     ...options,
   };
 
   // 用于生成 manifest 名字
   if (!name) {
-    throw new PluginError('gulp-remove', '`name` required');
+    throw new PluginError("gulp-remove", "`name` required");
   }
 
   // 用于删除构建文件
   if (!destination) {
-    throw new PluginError('gulp-remove', '`destination` required');
+    throw new PluginError("gulp-remove", "`destination` required");
   }
 
-  const manifestPath = path.resolve(options.cwd, manifestDir, `${name}-manifest.json`);
+  const manifestPath = path.resolve(_options.cwd, manifestDir, `${name}-manifest.json`);
   const oldManifest = loadManifest(manifestPath);
-  const newManifest = {};
+  const newManifest: Manifest = {};
 
   // 记录本次编译的 manifest，并在旧的 manifest 中删除仍然存在的文件的键值对
   function manifest() {
@@ -60,13 +69,13 @@ module.exports = function (name, destination, options = {}) {
       const fileList = [];
       const dirPath = path.dirname(file.relative);
 
-      if (typeof options.extension === 'string') {
-        fileList.push(replaceExt(filepath, options.extension))
+      if (typeof _options.extension === "string") {
+        fileList.push(replaceExt(filepath, _options.extension));
       }
 
       // 支持一对多映射
-      if (options.extension instanceof Array) {
-        options.extension.forEach((ext) => {
+      if (_options.extension instanceof Array) {
+        _options.extension.forEach((ext) => {
           fileList.push(replaceExt(filepath, ext));
         });
       }
@@ -94,7 +103,7 @@ module.exports = function (name, destination, options = {}) {
           return;
         }
       }
-      fsx.remove(path.join(options.cwd, destination, filepath));
+      fsx.remove(path.join(_options.cwd, destination, filepath));
     });
 
     writeManifest(manifestPath, newManifest);
@@ -104,4 +113,4 @@ module.exports = function (name, destination, options = {}) {
     manifest,
     remove,
   };
-};
+}
