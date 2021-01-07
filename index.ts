@@ -41,7 +41,7 @@ function deleteRecordFromManifest(manifest: Manifest, key: string) {
   } catch (error) {}
 }
 
-export default function (name: string, destination: string, options: Options = {}) {
+function gulpRemove (name: string, destination: string, options: Options = {}) {
   const _options: Require<Options, "cwd"> = {
     cwd: process.cwd(),
     extension: "",
@@ -114,3 +114,5 @@ export default function (name: string, destination: string, options: Options = {
     remove,
   };
 }
+
+export = gulpRemove;
