@@ -50,7 +50,7 @@ Type: `function`
 Return: `NodeJS.ReadWriteStream`
 对比前一次构建的 `manifest`，生成本次构建的 `manifest`。
 
-##### manifest
+##### remove
 Type: `function`  
 Return: `void`
 删除文件并将新的 `manifest` 写入文件。
